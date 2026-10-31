@@ -31,3 +31,7 @@ date_ist,round,candidate,judge,user,investor,business,total30,hack100,weakness
 2026-10-31,6,C5r,agy,7,6,6,19,81,"Notion API + GitHub Actions cron + Resend plumbing burns ~3 h for no extra points (novelty 6/8, end-user 5/8; MB4 and MB5 rated partial)"
 2026-10-31,6,C5r,meta,8,6,7,21,82,"Core fits only if frozen at 7:30 with one fixed-schema Notion DB; chasing stretch before deploy misses submission (novelty 6/8, end-user 6/8; all MB yes)"
 2026-10-31,6,C5r,grok,6,4,3,13,48,"Agent loop and Notion are overbuilt and miss where decisions evaporate (between meetings / WhatsApp) (novelty 5/8, end-user 5/8; MB1/3/4/6 partial)"
+2026-10-31,7,C5-final,claude,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING
+2026-10-31,7,C5-final,agy,8,6,6,20,91,"Manual WhatsApp .txt export feels like a mockup, not a real workflow"
+2026-10-31,7,C5-final,meta,6,4,5,15,70,"Courtroom UI chases UX while per-person reminders and digests are faked to own inbox (novelty 5/8, end-user 5/8; MB4/5/6 partial; GO)"
+2026-10-31,7,C5-final,grok,6,5,4,15,72,"7 must-builds plus multi-step agent too large to harden solo by voice in 8 h (novelty 5/8, end-user 5/8; MB4 partial; GO)"

@@ -1,0 +1,50 @@
+Harsh council: target user, Indian seed VC, hackathon-winning operator. No tools. Be blunt. Judge the plan END TO END.
+
+EVENT: Product Space x Wispr Flow Agentic AI Hackathon, India, 31 Oct 2026. Solo builder, builds ONLY by dictating with Wispr Flow into Claude Code, 3:30–11:30 PM IST; submission closes 11:59 PM IST. Submission: deployed URL + test login, a 2–3 min voiceover video (Drive link), a real Wispr word-count screenshot (faking = negative marks), extra materials. Rules: team max 2, one of 5 statements, no old projects, the product's main input must be natural speech via Wispr. Judges want no generic Claude UI and AI that's genuinely useful, not a chat box.
+RUBRIC /100: Wispr 20, Prototype/UX 20, AI integration 20, Problem understanding 15, LinkedIn 15, Innovation 10.
+
+STATEMENT 03 Meeting-to-execution: "Decisions made in meetings get lost. Must build: (1) transcript ingestion with speaker attribution; (2) extraction of decisions, action items, owners, deadlines; (3) detection of conflicts with earlier decisions stored in memory; (4) tasks in a tracker via an integration; (5) reminders before deadlines; (6) a weekly digest per person; (7) a confirmation step before anything is posted."
+
+PLAN: "OBJECTION!", the meeting agent that argues back. User: founder/PM at a 5–30 person Indian startup; decisions made on calls drift in WhatsApp.
+- INPUTS (MB1): Zoom/Meet/Wispr transcripts ("[mm:ss] Speaker N:"), a WhatsApp chat-export .txt (sender = speaker, iOS and Android formats), Slack/Google Chat text pasted as "Name: text", and a 30 s spoken Debrief box typed by Wispr. No WhatsApp API.
+- EXTRACTION (MB2): Gemini JSON gives decisions and actions with owner, resolved date, exact quote, speaker and time; unquotable items are dropped; self-corrections are shown struck through.
+- AGENT (MB3): Gemini function calling, 4 tools, max 5 steps: search_memory (topic key from a 15-key taxonomy → widening 14d/90d/all → embedding fallback), verify_conflict (independent second check), ask_clarifying_question (voice answer), queue_action (tray only). A visible reasoning trail; on error, a deterministic fallback (extract → lookup → classify), and the path taken is labelled. A contradiction shows a red OBJECTION! card with then-vs-now quotes; verdicts Overrule / Pivot (intentional) / Keep old / Flag, by tap or voice.
+- CONFIRM (MB7): a tray; nothing is saved or sent until ticked.
+- TRACKER (MB4): the in-app ledger is the tracker (owner, due date, status, quote) plus ONE real Notion database (fixed schema, internal token).
+- REMINDERS (MB5): a GitHub Actions hourly job → /api/reminders → Resend email (to the builder's own address) for tasks due within 24 h, plus a log and a Send-now button.
+- DIGEST (MB6): /digest/[person] showing owned tasks, changes and open objections, with a Gemini summary and an email button.
+- Design: courtroom-ledger/newspaper style (paper, ink, stamp red, serif), with a decision-spine timeline. Stack: Next.js on Vercel, Supabase (+pgvector), Gemini free key; login demo/demo.
+- Proof: an /eval page with 10 labelled snippets (3 contradictions, 2 refinements that must not be flagged, 2 WhatsApp) showing precision/recall and the agent-vs-fallback rate.
+- STRETCH: wa.me share link, voice Q&A "what did we decide about X", a decision-debt score, markdown export, mobile cards.
+
+DEMO STORY: the memory is the REAL kickoff call of this hackathon (host's answers: team max 2, submit by 11:59 PM, no old projects, must deploy with credentials, Wispr mandatory). The builder pastes an export from a small WhatsApp group he made with friends:
+1 "we can be 3 na?" 2 "3 is fine, they never said a limit" 3 "When's the submission?" 4 "Deadline is tomorrow morning" 5 "old projects are fine right" 6 "no need to deploy, video is enough" 7 "Let's aim to submit by midnight" 8 "Wispr is optional na".
+Expected: objections on 1, 2, 4, 5, 6 and 8, each with the kickoff quote and timestamp; 3 is a question; 7 is a refinement and NOT flagged. He corrects one by tap and one by voice, then shares the correction via wa.me. Next: a spoken debrief with a self-correction, a reasoning trail, and a clarifying question answered by voice; Confirm → ledger + Notion page → reminder Send-now email → a person's digest → the eval page → the Wispr word count.
+
+SCHEDULE (IST): 3:30 keys + LinkedIn post 1; 3:50–5:15 scaffold, theme, login, schema, parsers, extraction, tray; 5:15 first deploy; 5:30–6:45 agent + trail + objection + spine; 6:45–7:30 ledger + Notion, reminders, digest → CORE FROZEN; 7:30 dinner + LinkedIn post 2 (a build clip where the app objects to the builder); 8–9 seed + eval; 9–9:45 stretch only if the core is green; 9:45–10:30 polish + README + live run-through; 10:30 video; 11:00 screenshot + submit by 11:30. Post 3 (the demo) on 1 Nov. 20 natural spoken prompts are prepared.
+
+TASK: evaluate end to end: problem fit and the 7 must-builds; agent design; the user journey (meeting → chat drift → objection → confirm → Notion/reminders/digest); the demo story and WhatsApp script; schedule feasibility building by voice; deploy and credentials; the Wispr usage plan; the LinkedIn posts; submission readiness.
+
+ANSWER IN EXACTLY THIS FORMAT (keep the labels; one line each unless stated):
+USER: n/10
+INVESTOR: n/10
+BUSINESS: n/10
+TOTAL30: n
+HACK100: n (wispr n/20, ux n/20, ai n/20, problem n/15, linkedin n/15, innovation n/10)
+NOVELTY: n/8
+ENDUSER: n/8
+MB1..MB7: one line each, yes|partial|no — reason
+AGENT_DESIGN: 2–4 sentences
+USER_JOURNEY: 2–4 sentences
+DEMO_STORY: 2–4 sentences (incl. the WhatsApp script)
+SCHEDULE: feasible|tight|infeasible — 2–3 sentences
+DEPLOY_CREDENTIALS: 1–2 sentences
+WISPR_PLAN: 1–2 sentences
+LINKEDIN: 1–2 sentences
+SUBMISSION_READINESS: 1–2 sentences
+RISK1: highest risk — mitigation
+RISK2: ... — mitigation
+RISK3: ... — mitigation
+BIGGEST_WEAKNESS: one sentence
+ONE_CHANGE: one sentence
+GO_NO_GO: GO|NO-GO — one sentence
