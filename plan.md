@@ -56,7 +56,8 @@ Optional (cheap): **Share to WhatsApp** — `https://wa.me/?text=` link with the
 
 **Voice-first UX.** Hero Debrief box typed by Wispr (hold Fn). Voice also for verdicts, clarifying answers and (stretch) "what did we decide about X?" Q&A.
 **Design (anti-Claude-UI).** Courtroom ledger / newspaper: paper #F4EFE6, ink black, stamp red #C0392B, serif display (Fraunces), mono quotes, rubber stamps (CONFIRMED / OVERRULED / PIVOT), vertical decision spine with superseded decisions struck through.
-**Wow (30 s).** Memory holds the real kickoff call. Akash pastes a short WhatsApp export from a "team" chat ("Rohan: bro let's do it as 3 of us") → OBJECTION! "Kickoff (Sakshi, 30:41): max team size is 2". Then he speaks a debrief with a self-correction ("submit at midnight, actually 11:45") → struck-through correction, reasoning trail shows search_memory → verify_conflict → "refines 11:59 PM deadline, not a conflict". Confirm → Notion page appears, reminder queued.
+**Wow (30 s).** Memory = the **real kickoff transcript** of this hackathon (Sakshi's answers: team max 2, submit by 11:59 PM IST, no old projects, deploy + credentials, 2–3 min video). Akash pastes the `.txt` export of a **small demo WhatsApp group he made himself with friends** (not the official hackathon group). Each wrong claim gets a red OBJECTION! card with both quotes: "Rohan (2:41 pm): we can be 3 na" vs "Sakshi (30:41): max is a team of two". Akash corrects each by tap or by voice ("keep the kickoff rule"), then shares the correction back with a wa.me link. The trail shows one honest non-conflict too: "submit by midnight" is read as a **refinement** of 11:59 PM, not a contradiction.
+**Chat inputs.** WhatsApp is the `.txt` from "Export chat → Without media". No WhatsApp Business/API. The same paste box takes **Slack or Google Chat text copied as `Name: text`** (generic format), so no Slack app is needed. Sharing back is a wa.me link the user taps to send.
 **Proof.** /eval: 10 labelled snippets (3 contradictions, 2 refinements that must NOT be flagged, 5 plain incl. 2 WhatsApp) → live precision/recall + the agent-vs-fallback rate. Plus the Notion page, reminder log, real Wispr word count.
 **Stretch (only after the core is deployed, in order):** Share to WhatsApp → voice Q&A → decision-debt score (silently reversed decisions/week) → markdown export → speaker rename → mobile swipe cards → share-as-image.
 **Cut:** GitHub Issues as tracker, Vercel cron backup, Slack/Calendar/Linear APIs, live call joining, multi-tenant auth.
@@ -93,28 +94,45 @@ Optional (cheap): **Share to WhatsApp** — `https://wa.me/?text=` link with the
 "Today I'm building an AI product without typing a single prompt. 🎙️
 I'm at the #AgenticAI Hackathon by @Product Space x @Wispr Flow, taking on Meeting-to-Execution.
 In Indian startups, decisions don't die in meetings. They die in WhatsApp. 'Bro let's push launch to the 30th' and the 15th is quietly gone.
-So I'm building OBJECTION!: paste a call or a WhatsApp chat, or just talk for 30 seconds. It turns that into tasks, and it *objects*, with receipts, when you contradict something your team already decided.
+So I'm building OBJECTION!: paste a call, a WhatsApp export or Slack text, or just talk for 30 seconds. It turns that into tasks, and it *objects*, with receipts, when you contradict something your team already decided.
 Every line dictated with Wispr Flow into Claude Code. 10 hours. 👇 Where did your team's last lost decision die?"
 
 **Post 2 (while building; 20–30 s clip: Wispr dictating into Claude Code, then the reasoning trail and a red OBJECTION!):**
 "~5 hours in. ~X,XXX words spoken, 0 typed.
 Learning: speaking prompts makes me explain *why*, and the AI builds what I meant.
-Plot twist: I fed the app our own hackathon kickoff call. Then I pasted a WhatsApp message from 'my team' saying we're 3 people. It objected: 'Kickoff ruled max team size = 2', with the timestamp. 😅
+Plot twist: I fed the app our own hackathon kickoff call. Then I made a tiny WhatsApp group with friends, let them 'discuss' the rules, and pasted the export. It objected four times: team of 3, 'deadline is tomorrow morning', old projects, no deploy. Each came with the exact kickoff quote and timestamp. And it did NOT flag 'let's submit by midnight', because that's a refinement. 😅
 @Product Space @Wispr Flow #BuildWithVoice"
 
 **Post 3 (by 1 Nov, demo video):**
 "Built in one day, entirely by voice: OBJECTION! 🔨
-→ calls, WhatsApp chats or a 30-second voice debrief → decisions, owners, deadlines, each with the quote
+→ calls, WhatsApp exports, Slack/Google Chat text or a 30-second voice debrief → decisions, owners, deadlines, each with the quote
 → an agent that searches past decisions, double-checks itself and objects when you contradict them (eval: __% precision, refinements correctly not flagged)
 → confirm, then tasks land in the ledger + Notion; reminders and a weekly digest per person
 Wispr Flow for the day: __ words. Takeaway: when you speak, you think out loud, and that's the best spec an AI can get.
 Try it: <url> (demo / demo). Thanks @Product Space @Wispr Flow. What should it object to next?"
 
+## 5b. Demo WhatsApp script
+Type these in a small demo group Akash creates (e.g. "Objection demo" with 2–3 friends), then Export chat → Without media and paste the .txt. Nothing goes to the official hackathon group.
+1. **Rohan:** Bro I'm in for the hackathon, adding Neha too, we can be 3 na?
+2. **Neha:** Yes 3 is fine I think, they never said a limit
+3. **Akash:** Ok cool. When's the submission?
+4. **Rohan:** Deadline is tomorrow morning I heard, we have the whole night 😎
+5. **Neha:** Also can we just submit my old expense-tracker project? old projects are fine right
+6. **Rohan:** And no need to deploy, video is enough
+7. **Akash:** Let's aim to submit by midnight then
+8. **Neha:** Wispr is optional na, we can type
+
+Expected result:
+- Objections: 1–2 (team max is 2), 4 (deadline is 11:59 PM IST), 5 (no old projects), 6 (must deploy, with test credentials), 8 (Wispr is mandatory and 20% of the score).
+- 3 is a question, so no decision.
+- **7 is a refinement and must NOT be flagged.** This proves there are no false positives.
+- Use friends' real first names or keep these.
+
 ## 6. Demo video script (2:30, screen + voiceover)
 0:00–0:15 Hook: "In Indian startups, decisions don't die in meetings, they die in WhatsApp. This is OBJECTION!, the meeting agent that argues back, built entirely by voice."
 0:15–0:35 Memory: decision spine with today's real kickoff call ingested: speakers, quotes, timestamps.
-0:35–1:00 WhatsApp: paste a chat export. Senders become speakers. Red OBJECTION! "Kickoff ruled max team = 2". Tap **Keep old**.
-1:00–1:30 Voice: hold Fn, speak a messy debrief with a self-correction. Show it struck through. Reasoning trail: search_memory → verify_conflict → "refinement, not a conflict". The agent asks "Is Priya the owner?", answered by voice.
+0:35–1:05 WhatsApp: "I made a small group with friends and asked about the rules." Paste the exported .txt. Senders become speakers. Red OBJECTION! cards for team of 3, "tomorrow morning", old projects and no deploy, each with the kickoff quote. Tap **Keep old** on one, say "keep the kickoff rule" for the next, then tap Share to WhatsApp. Point out that "submit by midnight" was not flagged, because it is a refinement. "Works with Slack or Google Chat text too, just paste."
+1:05–1:30 Voice: hold Fn, speak a messy debrief with a self-correction. Show it struck through. Reasoning trail: search_memory → verify_conflict → "refinement, not a conflict". The agent asks "Is Priya the owner?", answered by voice.
 1:30–1:50 Confirm → ledger card + Notion page appear. Reminder log + **Send now** email arrives. Priya's weekly digest.
 1:50–2:10 Eval page: precision/recall, refinements correctly not flagged, agent-vs-fallback rate. "Not a summarizer: memory plus judgement."
 2:10–2:30 Built by voice: Wispr word count + clip of dictating to Claude Code. Close: "Paste it, say it, and never lose a decision again."
@@ -133,7 +151,7 @@ Try it: <url> (demo / demo). Thanks @Product Space @Wispr Flow. What should it o
 11. "Now the tracker. Make a Ledger page where every confirmed action is a card with owner, due date, status open, done or blocked, the source quote and a link to the meeting, and I can change status with one tap. Then add Notion: when I confirm, create a page in the Notion database from NOTION_DB_ID with these exact properties — Title, Owner, Due, Status, Source quote, Meeting and Objection link — and show a 'filed in Notion' stamp with the link. Handle a bad token nicely."
 12. "Reminders. Make an API route at api slash reminders that checks a CRON_SECRET header, finds open actions due in the next 24 hours that haven't been reminded, emails them with Resend to REMINDER_TO_EMAIL with the owner's name in the subject, and writes a row to the reminders log. Add a GitHub Actions workflow that calls it every hour with the secret, a Reminder log page, and a 'Send now' button that runs the same function."
 13. "Weekly digest per person: a page at digest slash name showing what they own and when it's due, what changed this week — new, overruled and pivoted decisions — and open objections that involve them, with a short friendly Gemini summary on top and an 'Email this digest' button. Then redeploy."
-14. "Seed data. Write a seed script that loads the real kickoff transcript from a file, dated today, with Speaker 2 as Sakshi, plus three short earlier team meetings from last week with a launch date, a pricing decision and an owner, and one small WhatsApp chat export from the team. Make it safe to run twice."
+14. "Seed data. Write a seed script that loads the real kickoff transcript from a file, dated today 31 October, with Speaker 2 as Sakshi, and pre-extracts its decisions as the memory: team size max two, submission by 11:59 PM IST today, LinkedIn posts by 1 November 11:59 PM, no old projects, you must pick one of the five statements, the project must be deployed with test credentials, a 2–3 minute video with voiceover, and Wispr Flow use is mandatory and 20 percent of the score. Also add two short earlier team meetings from last week so the timeline isn't empty. Don't seed the WhatsApp chat, I'll paste that live. Make it safe to run twice. And make sure the paste box also accepts plain Name colon text from Slack or Google Chat."
 15. "Now an eval page to prove it works. Ten labelled snippets: three that really contradict earlier decisions, two that are refinements and must not be flagged, and five normal ones with known actions, including two from WhatsApp. Run them through the real pipeline and show precision and recall for action extraction and conflict detection, which path ran, agent or fallback, and the failures. Then run it and tighten the prompts until the refinements stop getting flagged — but don't change the labels."
 16. "Small one: on every confirmed decision and objection add a 'Share to WhatsApp' button that opens a wa dot me link with the text filled in, so I just tap send."
 17. "Add voice Q&A over memory: a box where I can ask 'what did we decide about pricing?' and it answers with the timeline of decisions on that topic, with quotes and dates, using search_memory."
