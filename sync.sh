@@ -9,7 +9,7 @@ for f in instructions.md checklist.md rules.md problem-statements.md kickoff-not
 done
 [ -f "$SRC/github-audit-public.md" ] && cp "$SRC/github-audit-public.md" github-audit.md
 mkdir -p council
-for f in "$SRC"/council/round-*.md "$SRC"/council/*-prompt.txt "$SRC"/council/*-cands.txt "$SRC"/council/scores.csv "$SRC"/council/common.txt; do
+for f in "$SRC"/council/round-*.md "$SRC"/council/*-prompt.txt "$SRC"/council/*-cands.txt "$SRC"/council/scores.csv "$SRC"/council/common.txt "$SRC"/council/weak-points-options.md; do
   [ -f "$f" ] && cp "$f" council/
 done
 for j in claude agy; do mkdir -p council/$j; cp "$SRC"/council/$j/*.md council/$j/ 2>/dev/null || true; done
