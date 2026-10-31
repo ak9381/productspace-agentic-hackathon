@@ -5,9 +5,9 @@ Read each stage aloud with Wispr Flow into Antigravity, in order. Each one point
 |---|---|---|
 | [1](stage-1.md) | 3:45–4:05 PM | New project, courtroom-ledger look, secrets in .dev.vars |
 | [2](stage-2.md) | 4:05–4:30 PM | Supabase login, 5-user allowlist, schema, Gemini usage cap (60/user/day) |
-| [3](stage-3.md) | 4:30–5:00 PM | Project picker, transcript/WhatsApp/Slack/debrief parsing, extraction, confirmation tray |
+| [3](stage-3.md) | 4:30–5:00 PM | **Dictate with Wispr** box first; messy speech → clean output (fillers, digressions, self-corrections); what you said vs what we understood; paste tab; tray |
 | [4](stage-4.md) | 5:00–5:15 PM | First Cloudflare Workers deploy via OpenNext (Vercel if >20 min) |
-| [5](stage-5.md) | 5:15–5:40 PM | Seed the real kickoff memory + Client website project, eval page |
+| [5](stage-5.md) | 5:15–5:40 PM | Seed the real kickoff memory + Client website project, eval page (14 cases incl. 3 messy-speech) |
 | [6](stage-6.md) | 5:40–6:15 PM | Agent loop, reasoning trail, OBJECTION! cards, decision timeline |
 | [7](stage-7.md) | 6:15–6:40 PM | Live meeting mode on Google Meet, demo clip button (Meet test ~6:30) |
 | [8](stage-8.md) | 6:40–7:00 PM | Notion "Told You So Tasks", reminders, outbox, Monday digest, crons → **freeze** |
