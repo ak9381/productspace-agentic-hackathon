@@ -114,6 +114,7 @@ Optional (cheap): **Share to WhatsApp** — `https://wa.me/?text=` link with the
 | 6:35–7:00 | Prompts 11–13: ledger + Notion best-effort log, tracker adapter, every-minute reminders + Monday digest on Cloudflare Cron Triggers (custom worker `scheduled()`), outbox page | **CORE FROZEN 7:00 + redeployed** |
 | 7:00–7:30 | Dinner; LinkedIn post 2 | Posted |
 | 7:30–9:00 | Hardening only: rehearse the Google Meet call (meeting 2) twice with the real participants on the deployed URL, run the full demo 3×, fix bugs, tighten prompts against eval, cache demo responses | Demo passes 3× |
+| 7:30–9:30 (parallel, stretch) | **Stage 9b: Connect Wispr Notetaker** (stages/stage-9b.md): OAuth+PKCE to Wispr MCP, cron pull every 5 min, auto-import as source "Wispr Notetaker", flag `WISPR_ENABLED`; drop if not working by 9:30 | Test meeting auto-imported |
 | 9:00–9:45 | Prompt 20 README + empty/loading states only. **Prompt 19 theme polish cut** (time went to LIVE mode) | No broken pages |
 | 9:45–10:30 | Full live run-through on the deployed URL incl. the 3-min reminder beat; logged-out check of every link. **Last deploy by 10:10 PM** (≥15 min before recording, so the cron is live) | Green; outbox shows a SENT row |
 | 10:30–11:00 | Record video (§6), upload to Drive (link sharing on) | Opens logged-out |
