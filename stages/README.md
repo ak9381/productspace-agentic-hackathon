@@ -14,7 +14,8 @@ Read each stage aloud with Wispr Flow into Antigravity, in order. Each one point
 | — | 7:00–7:30 PM | Dinner + LinkedIn post 2 |
 | [9](stage-9.md) | 7:30–10:10 PM | Hardening, README, final deploy by 10:10 |
 | [9b](stage-9b.md) | 7:30–9:30 PM (stretch) | **Connect Wispr Notetaker**: OAuth to Wispr MCP, auto-import meetings via cron every 5 min, behind `WISPR_ENABLED` |
-| — | 10:30–11:30 PM | Record video, Wispr screenshot, submit |
+| 9d | 10:00–11:00 PM | Demo video: Claude writes the script and drives Chrome, you narrate in Loom (stage-9d.md) |
+| — | 11:00–11:30 PM | Wispr screenshot, submit |
 | [10](stage-10.md) | after submitting | Optional extras |
 
 Latest decisions applied: Gemini 3.5 Flash Lite (free tier 15 RPM / 500 RPD → live check every 15–20 s, 60 calls/user/day); Resend without a domain sends only to the account's own email, so demo mail goes there with the person's name in the subject; crons `* * * * *` and `30 3 * * MON`. plan.md still says "OBJECTION!" in places; the app name is Told You So.
