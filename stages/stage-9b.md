@@ -7,7 +7,10 @@ I want a Connect Wispr button on the settings page, so meetings from the Wispr F
 We don't know the tool names yet. So step one after sign in is to call tools list and log the result, then pick the tools for listing meetings and reading a transcript. It's read only: transcripts, summaries, notes, action items and attendees.
 Then reuse the every minute cron, no new cron trigger, and run the Wispr pull only every fifth minute. Refresh the token if needed, list recent meetings, skip meeting ids we already imported, and import each new transcript into the user's default project. Run the normal extraction and conflict check, and show it in the UI with the source label Wispr Notetaker. Keep each run under the 50 subrequest limit, so cap it at a few meetings per run. Add a Disconnect button that deletes the tokens.
 
+Step zero is a Supabase migration that creates a wispr connections table with user id, the encrypted access token, the encrypted refresh token, expires at, client id, last synced at, and a list of imported meeting ids. Turn row level security on with no client policies.
+
 ## Verify
+- The migration creates wispr_connections (user_id, encrypted access and refresh tokens, expires_at, client_id, last_synced_at, imported_meeting_ids) and RLS is on.
 - With WISPR_ENABLED off, the settings page has no Wispr button and everything else works.
 - With it on, Connect Wispr signs in with Google and comes back to settings showing Connected.
 - The tools list output is in the Worker logs, and the tool names we picked are written in the README.

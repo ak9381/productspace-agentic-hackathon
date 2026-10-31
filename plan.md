@@ -1,3 +1,5 @@
+**Stages win over this file. Name is Told You So; Gemini cap 60/day, live check every 15 s; Resend only sends to the account email.**
+
 # PLAN v6 (final) — Product Space Agentic AI Hackathon, 31 Oct 2026
 v4 written 31 Oct ~2:10 PM IST; updated to v5 ~2:25 PM IST after rounds 5–6; **final v6 ~2:40 PM IST** after round 7 (end-to-end review, all 3 judges GO with a hard scope cut); **v6 + LIVE MEETING mode ~2:45 PM IST** (core, MB3); **+ project scoping ~2:50 PM IST** (core); **+ Cloudflare Workers hosting ~2:55 PM IST**; **+ every-minute reminders, outbox, tracker adapter, cron fixes ~3:00 PM IST**; **+ Google Meet live demo ~3:05 PM IST**; **+ 5-user limiter + refreshed checklist ~3:10 PM IST**. Originally written by Grok Bot (chair) after a 4-round council of Claude Code + Antigravity (agy). Build by Akash's voice only; nothing has been scaffolded.
 
