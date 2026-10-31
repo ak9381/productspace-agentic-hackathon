@@ -8,7 +8,8 @@ for f in instructions.md checklist.md rules.md problem-statements.md kickoff-not
   [ -f "$SRC/$f" ] && cp "$SRC/$f" "$f"
 done
 [ -f "$SRC/github-audit-public.md" ] && cp "$SRC/github-audit-public.md" github-audit.md
-mkdir -p council
+mkdir -p council stages
+cp "$SRC"/stages/*.md stages/ 2>/dev/null || true
 for f in "$SRC"/council/round-*.md "$SRC"/council/*-prompt.txt "$SRC"/council/*-cands.txt "$SRC"/council/scores.csv "$SRC"/council/common.txt "$SRC"/council/weak-points-options.md; do
   [ -f "$f" ] && cp "$f" council/
 done
