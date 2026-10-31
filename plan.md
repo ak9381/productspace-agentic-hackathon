@@ -1,5 +1,5 @@
 # PLAN v6 (final) — Product Space Agentic AI Hackathon, 31 Oct 2026
-v4 written 31 Oct ~2:10 PM IST; updated to v5 ~2:25 PM IST after rounds 5–6; **final v6 ~2:40 PM IST** after round 7 (end-to-end review, all 3 judges GO with a hard scope cut). Originally written by Grok Bot (chair) after a 4-round council of Claude Code + Antigravity (agy). Build by Akash's voice only; nothing has been scaffolded.
+v4 written 31 Oct ~2:10 PM IST; updated to v5 ~2:25 PM IST after rounds 5–6; **final v6 ~2:40 PM IST** after round 7 (end-to-end review, all 3 judges GO with a hard scope cut); **v6 + LIVE MEETING mode ~2:45 PM IST** (core, MB3). Originally written by Grok Bot (chair) after a 4-round council of Claude Code + Antigravity (agy). Build by Akash's voice only; nothing has been scaffolded.
 
 ## 1. Chosen track: 03 Meeting-to-execution → "OBJECTION!"
 **Why:** speech is the natural input (a 30-second spoken debrief after a call), the demo goes voice → action in under 30 s, all 7 must-builds are feasible solo with free tools, Akash already has real demo data (today's kickoff transcript), and it passed every compliance check. Exam-prep tutor (02) was the runner-up: strongest India appeal but 7 subsystems and documented hallucination risk in misconception detection make it hard to prove in 9 h.
@@ -48,11 +48,13 @@ Process note: rounds 3–4 used fresh sessions and the same prompt for both judg
 |---|---|---|
 | MB1 Transcript ingestion + speaker attribution | Three inputs: Zoom/Meet/Wispr transcript (`[mm:ss] Speaker N:` / `Name:`), **WhatsApp chat export** (`[31/10/26, 2:05 pm] Name: text` or `31/10/26, 14:05 - Name: text`; the sender is the speaker), spoken Debrief (speaker = you). Speaker names auto-guessed; rename is a stretch | Yes |
 | MB2 Decisions, actions, owners, deadlines | Gemini structured JSON; each item has exact quote + speaker + timestamp; relative dates resolved; unquotable items dropped; self-corrections shown struck through | Yes |
-| MB3 Conflicts with earlier decisions in memory | **Bounded agent loop** (Gemini function calling, 4 tools, max 5 steps): `search_memory` (topic key → widen 14 d/90 d/all → embedding fallback), `verify_conflict` (independent second check; **refinement rule:** a narrower deadline or a more specific value inside the old one = REFINE, not contradict, e.g. "by midnight" vs "by 11:59 PM"), `ask_clarifying_question` (ambiguous owner/date; answer by voice), `queue_action` (tray only). **Reasoning-trail panel** shows each step. On error/timeout → deterministic fallback (extract → key lookup → classify) so the demo never stalls. On a Gemini 429, the demo inputs (kickoff + demo WhatsApp + scripted debrief) are served from **cached Gemini responses** (stored JSON, labelled "cached"). Contradiction → red **OBJECTION!** card: then-vs-now quotes, who/where/when; verdicts Overrule · Pivot (intentional) · Keep old · Flag, by tap or voice | **Hero** |
+| MB3 Conflicts with earlier decisions in memory | **Bounded agent loop** (Gemini function calling, 4 tools, max 5 steps): `search_memory` (topic key → widen 14 d/90 d/all → embedding fallback), `verify_conflict` (independent second check; **refinement rule:** a narrower deadline or a more specific value inside the old one = REFINE, not contradict, e.g. "by midnight" vs "by 11:59 PM"), `ask_clarifying_question` (ambiguous owner/date; answer by voice), `queue_action` (tray only). **Reasoning-trail panel** shows each step. On error/timeout → deterministic fallback (extract → key lookup → classify) so the demo never stalls. On a Gemini 429, the demo inputs (kickoff + demo WhatsApp + scripted debrief) are served from **cached Gemini responses** (stored JSON, labelled "cached"). Contradiction → red **OBJECTION!** card: then-vs-now quotes, who/where/when; verdicts Overrule · Pivot (intentional) · Keep old · Flag, by tap or voice. **LIVE MEETING mode (`/live`)** flags contradictions *during* meeting 2 (see below) | **Hero** |
 | MB4 Tracker via integration | **Ledger = primary tracker**: action cards with owner, due date, status open/done/blocked, source quote, one-tap/spoken status. **One real integration: Notion** — one database, fixed schema (Title, Owner, Due, Status, Source quote, Meeting, Objection link), internal integration token. **Best-effort single-DB append**: every confirm tries one Notion page; result (filed / failed + reason) shown in a visible **Notion log**; a failure never blocks the ledger | Yes |
 | MB5 Reminders before deadlines | GitHub Actions hourly schedule → `/api/reminders` (secret header) → Resend email for actions due < 24 h, writes Reminder log; **Send now** runs the same function. Emails go to **each owner's email from the `people` table**; demo people use Akash's +alias addresses (akash+priya@…, akash+rohan@…), so real per-person mail with no domain setup | Yes |
 | MB6 Weekly digest per person | `/digest/[person]`: owned tasks, what changed this week, open objections, Gemini summary on top; "Email this". **Scheduled:** the same GitHub Actions workflow calls `/api/digest` weekly (Mon 9:00 AM IST) and emails each person their digest; also a Send digest now button + digest log | Yes |
 | MB7 Confirmation before posting | Confirmation tray: nothing is saved, sent to Notion or emailed until ticked + Confirm | Yes |
+**LIVE MEETING mode (core, MB3).** `/live` uses the browser **Web Speech API** (Chrome on the Mac; `continuous` + `interimResults`, `en-IN`) to transcribe meeting 2 on the laptop mic. Interim text shows greyed; final sentences are appended with a speaker label (tap-to-switch chip: Akash / Guest, default alternates) and an mm:ss timer. **Every ~10 s or 2 new final sentences** (debounced; never more than one request in flight) the client POSTs only the new lines to **`/api/live-check`**. The server first runs a cheap regex/keyword gate (deadline, team, submit, video, deploy, must, decide, let's, by <time>, numbers) and **skips chunks with no decision-like text** (no Gemini call). Otherwise it makes **one Gemini call per chunk** that both extracts candidate decisions (topic key from the same taxonomy) and classifies each against the stored memory rows for those keys (seeded kickoff decisions with exact quotes + timestamps, pre-loaded into the prompt, no agent loop), using the same **refinement rule**. A contradiction pops a live red **OBJECTION!** card: *then* — kickoff quote, speaker (Sakshi), meeting 1 + [mm:ss] — vs *now* — the new line, speaker, live [mm:ss]. Refinements show a small grey "refinement, not flagged" chip; new decisions a small "new" chip. On 429 → the cached-response fallback for the scripted meeting 2 lines. **Fallback:** if mic/Web Speech fails, paste the transcript after the call into the normal ingest. **End meeting** saves the transcript as meeting 2 and runs the full extraction + agent into the confirmation tray (nothing saved to the ledger/Notion until confirmed). Note: Web Speech is not Wispr, so it adds nothing to (and takes nothing from) the Wispr word count; Wispr stays the input for the Debrief, verdicts and all build prompts.
+**Demo order:** meeting 1 = the real kickoff call (memory) → meeting 2 = a short live call on `/live` (Akash + his second phone or a friend) → the WhatsApp drift → the Wispr debrief → confirm → ledger/Notion/reminders/digest.
 Optional (cheap): **Share to WhatsApp** — `https://wa.me/?text=` link with the confirmed decision or objection text; the user taps send. No API.
 
 **Voice-first UX.** Hero Debrief box typed by Wispr (hold Fn). Voice also for verdicts, clarifying answers and (stretch) "what did we decide about X?" Q&A.
@@ -70,7 +72,8 @@ Optional (cheap): **Share to WhatsApp** — `https://wa.me/?text=` link with the
 - **Gemini 2.x Flash** via Google AI Studio free key: JSON schema + function calling; `text-embedding` model for fallback. Check current model names in AI Studio at setup.
 - **Notion API**: internal integration token + one shared database. **Resend** free (to each person's email in `people`; demo people = Akash's +aliases). **GitHub Actions**: one workflow, hourly `/api/reminders` + weekly `/api/digest`.
 - Env vars: GEMINI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY, NOTION_TOKEN, NOTION_DB_ID, RESEND_API_KEY, RESEND_FROM, CRON_SECRET, DEMO_PASSWORD. Never paste keys in chat or commit them.
-- Routes: `/api/ingest` (parse transcript/WhatsApp/debrief) → `/api/agent` (loop + trace, fallback) → tray → `/api/commit` (DB + Notion) ; `/api/reminders` ; `/api/digest` ; pages `/`, `/ledger`, `/meetings/[id]`, `/digest/[person]`, `/eval`, `/login`.
+- `/live`: browser Web Speech API (Chrome) → debounced chunks → `/api/live-check` (regex gate → 1 Gemini call, memory rows inlined) → live cards; End meeting → `/api/ingest` + agent → tray.
+- Routes: `/api/ingest` (parse transcript/WhatsApp/debrief) → `/api/agent` (loop + trace, fallback) → tray → `/api/commit` (DB + Notion) ; `/api/reminders` ; `/api/digest` ; `/api/live-check` ; pages `/`, `/live`, `/ledger`, `/meetings/[id]`, `/digest/[person]`, `/eval`, `/login`.
 
 ## 4. Hour-by-hour (IST) — core frozen at 7:00 PM, zero stretch before 10:30
 **Pre-build checklist (done BEFORE 3:30 PM, by clicking, no code):**
@@ -85,20 +88,21 @@ Optional (cheap): **Share to WhatsApp** — `https://wa.me/?text=` link with the
 | Time | Do | Done when |
 |---|---|---|
 | 3:30–3:45 | LinkedIn post 1; new folder in Claude Code | Posted |
-| 3:45–4:15 | Prompts 1–3: scaffold, slim theme, login, schema (+ people with emails) | Themed shell |
-| 4:15–5:00 | Prompts 4–6: parsers (transcript + WhatsApp + Name: text), extraction, Debrief + tray | Kickoff + WhatsApp → cited items |
-| 5:00–5:15 | Prompt 7: first Vercel deploy | Live URL with login |
-| 5:15–5:45 | Prompts 14–15 (moved up): seed kickoff decisions with exact quotes + eval page; run eval on the fallback path | Eval runs; 7 (refinement) not flagged |
-| 5:45–6:30 | Prompts 8–10: agent loop + trace + fallback + 429 cache, Objection card + verdicts, spine | Wow moment works; eval re-run on agent path |
-| 6:30–7:00 | Prompts 11–13: ledger + Notion best-effort log, reminders + digest on one workflow | **CORE FROZEN 7:00 + redeployed** |
+| 3:45–4:10 | Prompts 1–3: scaffold, slim theme (no extra styling), login, schema (+ people with emails) | Themed shell |
+| 4:10–4:50 | Prompts 4–6: parsers (transcript + WhatsApp + Name: text), extraction, Debrief + tray | Kickoff + WhatsApp → cited items |
+| 4:50–5:05 | Prompt 7: first Vercel deploy | Live URL with login |
+| 5:05–5:35 | Prompts 14–15 (moved up): seed kickoff decisions with exact quotes + eval page; run eval on the fallback path | Eval runs; 7 (refinement) not flagged |
+| 5:35–6:15 | Prompts 8–10: agent loop + trace + fallback + 429 cache, Objection card + verdicts, spine | Wow moment works; eval re-run on agent path |
+| 6:15–6:35 | **Prompt 10b: LIVE MEETING mode** `/live` + `/api/live-check`; test with the meeting 2 script (§5c) in Chrome | 2 live objections, refinement not flagged |
+| 6:35–7:00 | Prompts 11–13: ledger + Notion best-effort log, reminders + digest on one workflow | **CORE FROZEN 7:00 + redeployed** |
 | 7:00–7:30 | Dinner; LinkedIn post 2 | Posted |
-| 7:30–9:00 | Hardening only: run the full demo 3×, fix bugs, tighten prompts against eval, cache demo responses | Demo passes 3× |
-| 9:00–9:45 | Prompt 19–20 (design pass within slim theme), README | No broken pages |
+| 7:30–9:00 | Hardening only: rehearse the live call (meeting 2) twice on the deployed URL, run the full demo 3×, fix bugs, tighten prompts against eval, cache demo responses | Demo passes 3× |
+| 9:00–9:45 | Prompt 20 README + empty/loading states only. **Prompt 19 theme polish cut** (time went to LIVE mode) | No broken pages |
 | 9:45–10:30 | Full live run-through on the deployed URL; logged-out check of every link | Green |
 | 10:30–11:00 | Record video (§6), upload to Drive (link sharing on) | Opens logged-out |
 | 11:00–11:30 | Real Wispr screenshot, fill form, submit; buffer. Stretch (16–18) only if submitted early | Submitted ≤ 11:30 |
 | 1 Nov | LinkedIn post 3; submit post links by 11:59 PM | — |
-**If behind at 6:30:** agent runs the fallback path only (trace still shown). **If behind at 7:00:** Notion stays log-only on failure, digest = scheduled + button, no new features. Never drop: parsers, extraction, Objection card, tray, ledger + Notion log, reminders + Send now, scheduled digest, deploy, eval.
+**If behind at 6:30:** agent runs the fallback path only (trace still shown). **If behind at 7:00:** Notion stays log-only on failure, digest = scheduled + button, no new features. Never drop: parsers, extraction, Objection card, LIVE mode (or its paste fallback), tray, ledger + Notion log, reminders + Send now, scheduled digest, deploy, eval.
 
 ## 5. LinkedIn posts (drafts — Akash posts them himself)
 **Post 1 (now):**
@@ -108,10 +112,10 @@ In Indian startups, decisions don't die in meetings. They die in WhatsApp. 'Bro 
 So I'm building OBJECTION!: paste a call, a WhatsApp export or Slack text, or just talk for 30 seconds. It turns that into tasks, and it *objects*, with receipts, when you contradict something your team already decided.
 Every line dictated with Wispr Flow into Claude Code. 10 hours. 👇 Where did your team's last lost decision die?"
 
-**Post 2 (while building; 20–30 s clip: Wispr dictating into Claude Code, then the reasoning trail and a red OBJECTION!):**
+**Post 2 (while building; 20–30 s clip: Wispr dictating into Claude Code, then the live call on /live with a red OBJECTION! popping up mid-sentence):**
 "~5 hours in. ~X,XXX words spoken, 0 typed.
 Learning: speaking prompts makes me explain *why*, and the AI builds what I meant.
-Plot twist: I fed the app our own hackathon kickoff call. Then I made a tiny WhatsApp group with friends, let them 'discuss' the rules, and pasted the export. It objected four times: team of 3, 'deadline is tomorrow morning', old projects, no deploy. Each came with the exact kickoff quote and timestamp. And it did NOT flag 'let's submit by midnight', because that's a refinement. 😅
+Plot twist: I fed the app our own hackathon kickoff call as memory. Then I hopped on a quick call with a friend and said 'let's make the video 5 minutes', and a red OBJECTION! popped up *live, mid-sentence*, with the kickoff quote: 2–3 minutes. Then I made a tiny WhatsApp group with friends, let them 'discuss' the rules, and pasted the export. It objected four times: team of 3, 'deadline is tomorrow morning', old projects, no deploy. Each came with the exact kickoff quote and timestamp. And it did NOT flag 'let's submit by midnight' or 'let's submit by 11', because that's a refinement. 😅
 @Product Space @Wispr Flow #BuildWithVoice"
 
 **Post 3 (by 1 Nov, demo video):**
@@ -139,14 +143,25 @@ Expected result:
 - **7 is a refinement and must NOT be flagged.** This proves there are no false positives.
 - Use friends' real first names or keep these.
 
-## 6. Demo video script (2:30, screen + voiceover)
-0:00–0:15 Hook: "In Indian startups, decisions don't die in meetings, they die in WhatsApp. This is OBJECTION!, the meeting agent that argues back, built entirely by voice."
-0:15–0:35 Memory: decision spine with today's real kickoff call ingested: speakers, quotes, timestamps.
-0:35–1:05 WhatsApp: "I made a small group with friends and asked about the rules." Paste the exported .txt. Senders become speakers. Red OBJECTION! cards for team of 3, "tomorrow morning", old projects and no deploy, each with the kickoff quote. Tap **Keep old** on one, say "keep the kickoff rule" for the next, then tap Share to WhatsApp. Point out that "submit by midnight" was not flagged, because it is a refinement. "Works with Slack or Google Chat text too, just paste."
-1:05–1:30 Voice: hold Fn, speak a messy debrief with a self-correction. Show it struck through. Reasoning trail: search_memory → verify_conflict → "refinement, not a conflict". The agent asks "Is Priya the owner?", answered by voice.
-1:30–1:50 Confirm → ledger card + Notion page appear. Reminder log + **Send now** email arrives. Priya's weekly digest.
-1:50–2:10 Eval page: precision/recall, refinements correctly not flagged, agent-vs-fallback rate. "Not a summarizer: memory plus judgement."
-2:10–2:30 Built by voice: Wispr word count + clip of dictating to Claude Code. Close: "Paste it, say it, and never lose a decision again."
+## 5c. Meeting 2 script (live call on /live, ~60 s)
+Akash on the laptop (Chrome, /live), the guest on his second phone or a friend on speaker near the mic. Speak clearly, one line each, a short pause between lines.
+1. **Akash:** Okay, quick sync on the hackathon submission.
+2. **Guest:** I think the demo video can be like five minutes, we have a lot to show. → **OBJECTION!** vs kickoff: video must be 2–3 minutes.
+3. **Akash:** And the LinkedIn posts we can do by Monday, right? → **OBJECTION!** vs kickoff: LinkedIn links due by 1 Nov 11:59 PM IST.
+4. **Guest:** Let's submit by 11 PM tonight to be safe. → **refinement** of 11:59 PM, NOT flagged (grey chip).
+5. **Akash:** Decided: Priya owns the demo video, due 10:30 tonight. → **new decision** + action (owner Priya, due 10:30 PM), goes to the tray on End meeting.
+6. **Akash:** Okay, ending the meeting. → no decision; tap End meeting.
+Expected: 2 live objections (lines 2, 3), 1 refinement not flagged (4), 1 new decision (5); End meeting → tray with the action.
+
+## 6. Demo video script (2:45, screen + voiceover)
+0:00–0:12 Hook: "Decisions don't die in meetings, they die in the next meeting and in WhatsApp. This is OBJECTION!, the meeting agent that argues back, built entirely by voice."
+0:12–0:25 Meeting 1 = memory: decision spine with today's real kickoff call ingested: speakers, quotes, timestamps.
+0:25–1:00 Meeting 2 LIVE on /live: Akash + guest run the §5c script. Mid-call, red OBJECTION! cards pop up for "five-minute video" and "LinkedIn by Monday", each showing Sakshi's kickoff quote and [mm:ss] vs the new line. "Submit by 11 PM" gets a grey refinement chip. End meeting → the Priya action lands in the tray. "This is the browser's speech-to-text for the call; Wispr is how I talk to the app."
+1:00–1:25 WhatsApp drift: paste the demo group export. Objections for team of 3, "tomorrow morning", old projects, no deploy, Wispr optional; "submit by midnight" not flagged. Keep old by tap, "keep the kickoff rule" by voice, Share to WhatsApp.
+1:25–1:45 Wispr debrief: hold Fn, a messy debrief with a self-correction, struck through. Reasoning trail: search_memory → verify_conflict → refinement. Clarifying question answered by voice.
+1:45–2:05 Confirm → ledger card + Notion log "filed". Reminder Send now email arrives at Priya's +alias; Priya's weekly digest (scheduled Mondays).
+2:05–2:25 Eval page: precision/recall, refinements not flagged, agent-vs-fallback rate.
+2:25–2:45 Built by voice: Wispr word count + clip of dictating to Claude Code. Close: "Say it in a meeting, a chat or a debrief, and never lose a decision again."
 
 ## 7. Spoken prompts (dictate via Wispr into Claude Code, in order)
 1. "Okay, so we're starting a brand new project called Objection. It's a Next.js 15 app with the App Router, TypeScript and Tailwind, deploying on Vercel. Set it up in this folder, add a dot env example with GEMINI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY, NOTION_TOKEN, NOTION_DB_ID, RESEND_API_KEY, RESEND_FROM, CRON_SECRET and DEMO_PASSWORD, and never put real keys in the code. Run it once to check it starts."
@@ -168,4 +183,5 @@ Expected result:
 17. "Add voice Q&A over memory: a box where I can ask 'what did we decide about pricing?' and it answers with the timeline of decisions on that topic, with quotes and dates, using search_memory."
 18. "Add a Decision debt score in the masthead: the share of decisions in the last seven days that were contradicted without anyone giving a verdict, shown as a little gauge with last week's number for comparison, and clicking it lists them."
 19. "Design pass. Go through every page: empty states, loading states that say things like 'checking the record', stamps animating in slightly, good spacing at laptop size, and a decent layout on a phone. Keep the newspaper feel."
-20. "Write a README with what Objection does, the seven must-builds mapped to features, the architecture, how the agent loop and fallback work, how to run it, the demo login, and a section on how I built it entirely by voice with Wispr Flow. Redeploy, then walk through the whole demo on the live URL with me and fix anything broken."
+10b. "Now a live meeting mode. Make a page at slash live that uses the browser Web Speech API in Chrome, continuous with interim results, English India. Show interim text in grey and final sentences with a speaker chip I can tap to switch between me and Guest, plus a timer. Every ten seconds or every two new final sentences, debounced and never more than one request at a time, post just the new lines to api slash live-check. On the server, first skip the chunk without calling Gemini if it has no decision-like words like deadline, team, submit, video, deploy, must, let's, decided, by a time, or numbers. Otherwise make one Gemini call that extracts candidate decisions with a topic key and compares each against the stored active decisions for those keys, which you pass in the prompt with their quotes, speakers and timestamps, using the same refinement rule. Return contradicts, refines or new. For contradicts, pop a red OBJECTION! card live with the earlier quote, the speaker, the meeting and the timestamp versus the new line; refinements get a small grey not-flagged chip. Use the cached responses on a 429. Add an End meeting button that saves the transcript as meeting 2 and runs the normal extraction and agent into the confirmation tray. If the mic doesn't work, show a paste-transcript fallback. Test it with the meeting 2 lines in the plan."
+20. "Write a README with what Objection does, the seven must-builds mapped to features, the architecture, how the agent loop and fallback work, how to run it, the demo login, the live meeting mode with a note that it uses the browser's speech recognition, not Wispr, and a section on how I built it entirely by voice with Wispr Flow. Redeploy, then walk through the whole demo on the live URL with me and fix anything broken."
