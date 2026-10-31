@@ -1,5 +1,5 @@
-# PLAN — Product Space Agentic AI Hackathon, 31 Oct 2026
-Written 31 Oct ~2:10 PM IST by Grok Bot (chair) after a 4-round council of Claude Code + Antigravity (agy). Build by Akash's voice only; nothing has been scaffolded.
+# PLAN v5 — Product Space Agentic AI Hackathon, 31 Oct 2026
+v4 written 31 Oct ~2:10 PM IST; **updated to v5 ~2:25 PM IST** after rounds 5–6 (adds Grok + Meta AI judges). Originally written by Grok Bot (chair) after a 4-round council of Claude Code + Antigravity (agy). Build by Akash's voice only; nothing has been scaffolded.
 
 ## 1. Chosen track: 03 Meeting-to-execution → "OBJECTION!"
 **Why:** speech is the natural input (a 30-second spoken debrief after a call), the demo goes voice → action in under 30 s, all 7 must-builds are feasible solo with free tools, Akash already has real demo data (today's kickoff transcript), and it passed every compliance check. Exam-prep tutor (02) was the runner-up: strongest India appeal but 7 subsystems and documented hallucination risk in misconception detection make it hard to prove in 9 h.
@@ -18,10 +18,13 @@ Written 31 Oct ~2:10 PM IST by Grok Bot (chair) after a 4-round council of Claud
 | 3 | **C3 v3 (de-risked)** | 21 | 25.5 | **23.2** | **91.0** |
 | 4 | C3 control | 19 | 20 | 19.5 | 78.5 |
 | 4 | **C4 v4 (final)** | 21 | 25 | **23.0** | **86.5** |
+| 5 | C4 v4 (4 judges: Claude PENDING, agy 18, Meta AI 21, Grok 15) | – | 18 | **18.0** (avg of 3) | 72.0 |
+| 6 | **C5 v5** (Claude PENDING, agy 19, Meta AI 21, Grok 13) | – | 19 | **17.7** (avg of 3) | 70.3 |
+Rounds 5–6 use a stricter fixed-format prompt and 2 harsher judges, so compare within a round, not across. Round 6 novelty /8: agy 6, Meta AI 6, Grok 5; end-user /8: 5, 6, 5. Must-builds: Meta AI all yes; agy MB4/MB5 partial; Grok MB1/3/4/6 partial.
 Round 4 added novelty and end-user value: C4 got novelty 6/8 and end-user 7/8 (Claude/agy).
 **Noise:** control moved >2 points every round (C1 −5, C2 −2.5, C3 −3.7), so the judges are noisy. Trust the ranking (v-next beat its control every round), not the absolute numbers. Target (>25 avg, no judge <22) **not reached**: Claude stays at 21. Its remaining critique is scope against the clock.
 **Must-fixes applied:** R1 conflict engine front and centre (both judges); R2 cut infra bloat (pgvector, multiple trackers) and add LinkedIn (both); R3 real reminders, topic-key drift (both); R4 Vercel free cron is daily-only, so hourly runs go through GitHub Actions, and keep 'Send now' (both). Open (one judge): multi-speaker parsing must stay solid (prompt 4), schedule tightness (cut order in §4).
-Process note: rounds 3–4 used fresh sessions and the same prompt for both judges. The compliance, novelty and end-user sections arrived after round 3 had run, so they are in the round-4 prompt only. Raw outputs are in council/round-N.md, and scores are in council/scores.csv.
+Process note: rounds 3–4 used fresh sessions and the same prompt for both judges. The compliance, novelty and end-user sections arrived after round 3 had run, so they are in the round-4 prompt only. Rounds 5–6 summaries: council/round-5.md, round-6.md; v5 delta: council/v5-candidate.md. Raw outputs are in council/round-N.md, and scores are in council/scores.csv.
 
 ### Compliance check (all 5 vs rules.md)
 | Check | 03 OBJECTION! | 01 Media | 02 Tutor | 04 Finance | 05 Career |
@@ -34,108 +37,106 @@ Process note: rounds 3–4 used fresh sessions and the same prompt for both judg
 | Non-generic UI | ✅ ledger theme | – | – | – | – |
 | AI genuinely useful | ✅ memory + verdicts | ✅ | ✅ | ✅ | ⚠️ |
 
-## 2. Product spec — "OBJECTION!" (the meeting agent that argues back)
-**One line:** talk for 30 seconds after any call; OBJECTION! turns your ramble into decisions and tasks, and objects — with receipts — when you contradict something the team already decided.
+## 2. Product spec — "OBJECTION!" v5 (the meeting agent that argues back)
+**One line:** paste a call transcript or a WhatsApp chat, or just talk for 30 seconds. OBJECTION! turns it into decisions and tasks, and it objects, with receipts, when you contradict something the team already decided.
 
-**End user.** Founder / PM / agency lead at a 5–30 person Indian startup with 10+ calls a week (Zoom, Meet, WhatsApp calls). Pain moment: "Wait, didn't we already agree launch is the 15th?" — nobody can find where; or a client call quietly reverses scope and devs build the old spec. Today: Notion/Docs notes, WhatsApp "MoM" messages, Otter/Fireflies summaries nobody rereads. Why switch: it remembers what was *decided*, not what was said, and capture costs 30 seconds of talking.
+**End user.** A founder, PM or agency lead at a 5–30 person Indian startup with 10+ calls a week, where half the decisions actually happen in WhatsApp groups. The pain moment: "Didn't we agree launch was the 15th?" Nobody can find where, or a client WhatsApp quietly changes scope. Today: Notion notes, WhatsApp "MoM" messages, Otter summaries nobody rereads. Why switch: it remembers what was *decided* across calls and chats, and capture is one paste or 30 seconds of talking.
 
-**Must-build coverage (statement 03):**
-| Official must-build | How OBJECTION! does it | Demo-visible? |
+**Must-build coverage (statement 03), the frozen core:**
+| Official must-build | v5 | Demo-visible |
 |---|---|---|
-| Transcript ingestion with speaker attribution | Paste Zoom/Meet/Wispr-Notetaker transcript; parser reads `[mm:ss] Speaker N:` and `Name:` formats; rename speakers once (Speaker 2 → Sakshi) | Yes |
-| Extract decisions, actions, owners, deadlines | Gemini structured JSON; every item carries quote + speaker + timestamp citation; relative dates ("Thursday") resolved against meeting date | Yes |
-| Conflicts with earlier decisions in memory | Each decision gets a topic key from a fixed taxonomy (~15 keys, new keys must be confirmed); fetch prior decisions with same key → Gemini classifies new / confirms / refines / **contradicts** with reason → red **Objection card**: then-vs-now quotes, who decided, Overrule / Keep old / Flag | **Hero** |
-| Tasks in a tracker via integration | GitHub Issues REST (one repo, labels owner:/due:), links shown | Yes |
-| Reminders before deadlines | GitHub Actions scheduled workflow (hourly, free) + Vercel daily cron backup → /api/reminders emails (Resend) actions due in 24h, writes Reminder log; "Send now" button | Yes (log) |
-| Weekly digest per person | /digest/[person]: what you own, what changed, open objections; "Email this" | Yes |
-| Confirmation before posting | Confirmation tray: nothing hits GitHub/email until ticked | Yes |
+| MB1 Transcript ingestion + speaker attribution | Three inputs: Zoom/Meet/Wispr transcript (`[mm:ss] Speaker N:` / `Name:`), **WhatsApp chat export** (`[31/10/26, 2:05 pm] Name: text` or `31/10/26, 14:05 - Name: text`; the sender is the speaker), spoken Debrief (speaker = you). Speaker names auto-guessed; rename is a stretch | Yes |
+| MB2 Decisions, actions, owners, deadlines | Gemini structured JSON; each item has exact quote + speaker + timestamp; relative dates resolved; unquotable items dropped; self-corrections shown struck through | Yes |
+| MB3 Conflicts with earlier decisions in memory | **Bounded agent loop** (Gemini function calling, 4 tools, max 5 steps): `search_memory` (topic key → widen 14 d/90 d/all → embedding fallback), `verify_conflict` (independent second check), `ask_clarifying_question` (ambiguous owner/date; answer by voice), `queue_action` (tray only). **Reasoning-trail panel** shows each step. On error/timeout → deterministic fallback (extract → key lookup → classify) so the demo never stalls. Contradiction → red **OBJECTION!** card: then-vs-now quotes, who/where/when; verdicts Overrule · Pivot (intentional) · Keep old · Flag, by tap or voice | **Hero** |
+| MB4 Tracker via integration | **Ledger = tracker**: action cards with owner, due date, status open/done/blocked, source quote, one-tap/spoken status. **One real integration: Notion** — one database, fixed schema (Title, Owner, Due, Status, Source quote, Meeting, Objection link), internal integration token | Yes |
+| MB5 Reminders before deadlines | GitHub Actions hourly schedule → `/api/reminders` (secret header) → Resend email for actions due < 24 h, writes Reminder log; **Send now** runs the same function. Emails go to Akash's own address (no domain setup) | Yes |
+| MB6 Weekly digest per person | `/digest/[person]`: owned tasks, what changed this week, open objections, Gemini summary on top; "Email this" | Yes |
+| MB7 Confirmation before posting | Confirmation tray: nothing is saved, sent to Notion or emailed until ticked + Confirm | Yes |
+Optional (cheap): **Share to WhatsApp** — `https://wa.me/?text=` link with the confirmed decision or objection text; the user taps send. No API.
 
-**Voice-first UX.** Home has one big "Debrief" box that Wispr types into (Fn held). Output shows the cleaned version with **self-corrections struck through** ("30th → 28th") so judges see messy speech → structure. Second input: paste transcript. Voice also for verdicts ("overrule it, Nov 28 stands").
-
-**Design (anti-Claude-UI).** Courtroom ledger / newspaper: paper background (#F4EFE6), ink black, stamp red (#C0392B), serif display (e.g. "Fraunces"/"Playfair"), mono for quotes, rubber-stamp CONFIRMED / OVERRULED marks, vertical **decision spine** timeline with superseded decisions struck through. No purple gradients, no default shadcn cards.
-
-**Wow moment (30 s).** Memory already holds the kickoff ("max team size is 2", "submission 11:59 PM"). Akash holds Fn: *"um so quick debrief, we're three of us now, Rohan's joining, and let's, uh, submit at like midnight—actually 11:45, and Priya owns the video."* → cleaned debrief, 2 actions, and two red **OBJECTION!** stamps: "Kickoff (Sakshi, 30:41) ruled team max = 2" and a refine-not-conflict note on 11:45 vs 11:59. Confirm → GitHub issue opens.
-
-**Proof.** /eval page: 10 labelled snippets (3 real conflicts, 2 refinements that must NOT be flagged, 5 plain) → live precision/recall of extraction and conflict detection. Plus real issue links, reminder log, Wispr word count.
-
-**Cut list.** Slack/Calendar/Linear, live call joining, multi-tenant auth (one demo team; login demo/demo), embeddings/pgvector, mobile layout polish.
-
-**Novelty (honest).** Builds on the temporal-memory idea (Zep/Graphiti, arXiv 2501.13956) and meeting-recap research (Microsoft, PACM HCI 2025); new is conflict-at-capture from speech, objection-with-receipts UX, and a measured false-positive test. See council/research.md.
+**Voice-first UX.** Hero Debrief box typed by Wispr (hold Fn). Voice also for verdicts, clarifying answers and (stretch) "what did we decide about X?" Q&A.
+**Design (anti-Claude-UI).** Courtroom ledger / newspaper: paper #F4EFE6, ink black, stamp red #C0392B, serif display (Fraunces), mono quotes, rubber stamps (CONFIRMED / OVERRULED / PIVOT), vertical decision spine with superseded decisions struck through.
+**Wow (30 s).** Memory holds the real kickoff call. Akash pastes a short WhatsApp export from a "team" chat ("Rohan: bro let's do it as 3 of us") → OBJECTION! "Kickoff (Sakshi, 30:41): max team size is 2". Then he speaks a debrief with a self-correction ("submit at midnight, actually 11:45") → struck-through correction, reasoning trail shows search_memory → verify_conflict → "refines 11:59 PM deadline, not a conflict". Confirm → Notion page appears, reminder queued.
+**Proof.** /eval: 10 labelled snippets (3 contradictions, 2 refinements that must NOT be flagged, 5 plain incl. 2 WhatsApp) → live precision/recall + the agent-vs-fallback rate. Plus the Notion page, reminder log, real Wispr word count.
+**Stretch (only after the core is deployed, in order):** Share to WhatsApp → voice Q&A → decision-debt score (silently reversed decisions/week) → markdown export → speaker rename → mobile swipe cards → share-as-image.
+**Cut:** GitHub Issues as tracker, Vercel cron backup, Slack/Calendar/Linear APIs, live call joining, multi-tenant auth.
+**Novelty (honest):** builds on temporal agent memory (Zep/Graphiti, arXiv 2501.13956) and meeting-recap research (Microsoft, PACM HCI 2025). What's new: conflict-at-capture across calls *and WhatsApp*, objection-with-receipts UX, a visible bounded agent trail, and a measured false-positive test. See council/research.md.
 
 ## 3. Architecture & stack (free, fast)
-- **Next.js 15 (App Router) + TypeScript + Tailwind** custom theme → **Vercel** (Hobby, free; cron is daily-only on Hobby, so hourly reminders come from a GitHub Actions schedule).
-- **Supabase** free Postgres (tables: meetings, utterances, decisions, actions, objections, reminders_log, people). Neon is the fallback.
-- **LLM: Gemini 2.x Flash via Google AI Studio free API key** (Akash's personal Google). JSON mode / responseSchema. Fallback: Claude/OpenAI key if he has one. Model name: check AI Studio at setup.
-- **GitHub Issues**: fine-grained PAT scoped to one new public repo `objection-demo-tasks`, stored only as a Vercel env var.
-- **Resend** free (send to Akash's own email for the demo).
-- Env vars: GEMINI_API_KEY, DATABASE_URL / SUPABASE keys, GITHUB_TOKEN, GITHUB_REPO, RESEND_API_KEY, DEMO_PASSWORD. Never paste keys in chat or commit them.
-- Flow: input → /api/debrief (clean + extract, 1 call) → /api/conflicts (topic key lookup → classify, 1 call) → tray → /api/commit (DB + GitHub) ; cron /api/reminders ; pages /, /meetings/[id], /digest/[person], /eval, /login.
+- **Next.js 15 + TypeScript + Tailwind** (custom theme) → **Vercel** Hobby.
+- **Supabase** free Postgres (+ pgvector for the embedding fallback): meetings, utterances, decisions, actions, objections, agent_trace, reminders_log, people.
+- **Gemini 2.x Flash** via Google AI Studio free key: JSON schema + function calling; `text-embedding` model for fallback. Check current model names in AI Studio at setup.
+- **Notion API**: internal integration token + one shared database. **Resend** free (to Akash's own email). **GitHub Actions** cron in the app repo.
+- Env vars: GEMINI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY, NOTION_TOKEN, NOTION_DB_ID, RESEND_API_KEY, REMINDER_TO_EMAIL, CRON_SECRET, DEMO_PASSWORD. Never paste keys in chat or commit them.
+- Routes: `/api/ingest` (parse transcript/WhatsApp/debrief) → `/api/agent` (loop + trace, fallback) → tray → `/api/commit` (DB + Notion) ; `/api/reminders` ; pages `/`, `/ledger`, `/meetings/[id]`, `/digest/[person]`, `/eval`, `/login`.
 
-## 4. Hour-by-hour (IST) — start once Akash is back (~3:30 PM)
+## 4. Hour-by-hour (IST) — core frozen by 7:30 PM
 | Time | Do | Done when |
 |---|---|---|
-| 3:30–3:50 | LinkedIn post 1; create Supabase, AI Studio key, GitHub repo + PAT, Resend; Claude Code new folder | Keys in .env.local |
-| 3:50–4:30 | Prompts 1–3: scaffold, theme tokens, schema, login | Themed shell on localhost |
-| 4:30–5:30 | Prompts 4–6: transcript parser + debrief extraction + confirmation tray | Paste kickoff → items with citations |
-| 5:30–6:00 | Prompts 7–8: GitHub push + first Vercel deploy | Real issue created from prod |
-| 6:00–7:15 | Prompts 9–11: topic keys, memory, conflict classifier, Objection card, decision spine | Wow moment works |
-| 7:15–7:45 | Dinner; LinkedIn post 2 (Wispr clip + learning) | Posted |
-| 7:45–8:45 | Prompts 12–14: reminders cron + log, digest page, self-correction trace | Cron row in log |
-| 8:45–9:45 | Prompts 15–16: eval page + seed data (3 earlier meetings) | P/R numbers live |
-| 9:45–10:30 | Prompts 17–19: design polish, empty states, voice verdicts, README | Looks non-generic |
-| 10:30–11:00 | Record 2–3 min video (script §6), upload to Drive (link sharing) | Link works logged-out |
-| 11:00–11:30 | Wispr usage screenshot (real), fill form, submit; buffer | Submitted ≤11:30 |
-| 1 Nov | LinkedIn post 3 + submit post links by 11:59 PM | — |
-If behind at 7:15: drop voice verdicts and digest email (keep digest page). Never drop: Objection card, tray, GitHub, deploy.
+| 3:30–3:50 | LinkedIn post 1; Supabase project, AI Studio key, Notion integration + DB (share it with the integration), Resend; new folder in Claude Code | Keys in .env.local |
+| 3:50–4:20 | Prompts 1–3: scaffold, theme, login, schema | Themed shell |
+| 4:20–5:15 | Prompts 4–6: parsers (transcript + WhatsApp), extraction, Debrief + tray | Kickoff + WhatsApp → cited items |
+| 5:15–5:30 | Prompt 7: first Vercel deploy | Live URL with login |
+| 5:30–6:45 | Prompts 8–10: agent loop + trace + fallback, Objection card + verdicts, decision spine | Wow moment works |
+| 6:45–7:30 | Prompts 11–13: ledger tracker + Notion, reminders + log + GitHub Actions, digest | **Core frozen + redeployed** |
+| 7:30–8:00 | Dinner; LinkedIn post 2 | Posted |
+| 8:00–9:00 | Prompts 14–15: seed data + eval page, tighten prompts | P/R live |
+| 9:00–9:45 | Prompts 16–18: stretch in order (WhatsApp share, voice Q&A, decision debt) | Only if core is green |
+| 9:45–10:30 | Prompt 19–20: design polish, README, full live run-through | No broken pages |
+| 10:30–11:00 | Record video (§6), upload to Drive (link sharing on) | Opens logged-out |
+| 11:00–11:30 | Real Wispr screenshot, fill form, submit; buffer | Submitted ≤ 11:30 |
+| 1 Nov | LinkedIn post 3; submit post links by 11:59 PM | — |
+**If behind at 6:45:** agent uses the fallback path only, with the trace still shown. **If behind at 7:30:** skip all stretch. Never drop: parsers, extraction, Objection card, tray, ledger + Notion, reminders + Send now, digest, deploy, eval.
 
 ## 5. LinkedIn posts (drafts — Akash posts them himself)
-**Post 1 (now, after kickoff):**
+**Post 1 (now):**
 "Today I'm building an AI product without typing a single prompt. 🎙️
-I'm at the #AgenticAI Hackathon by @Product Space x @Wispr Flow, and I'm taking on the Meeting-to-Execution problem.
-Why? Because the costliest bug in a startup isn't in the code — it's the decision everyone forgot. 'Didn't we agree launch was the 15th?' 
-So I'm building OBJECTION! — you talk for 30 seconds after a call, it turns that into tasks, and it *objects* when you contradict something your team already decided, with the receipts.
-Every line will be dictated with Wispr Flow into Claude Code. 10 hours. Let's see. 👇 What's a decision your team lost?"
+I'm at the #AgenticAI Hackathon by @Product Space x @Wispr Flow, taking on Meeting-to-Execution.
+In Indian startups, decisions don't die in meetings. They die in WhatsApp. 'Bro let's push launch to the 30th' and the 15th is quietly gone.
+So I'm building OBJECTION!: paste a call or a WhatsApp chat, or just talk for 30 seconds. It turns that into tasks, and it *objects*, with receipts, when you contradict something your team already decided.
+Every line dictated with Wispr Flow into Claude Code. 10 hours. 👇 Where did your team's last lost decision die?"
 
-**Post 2 (while building, with 20–30 s screen clip of Wispr dictating into Claude Code + the first red Objection card):**
-"5 hours in, ~X,XXX words spoken, 0 typed. 
-What I've learned: speaking prompts makes me explain *why*, not just *what* — and the AI's output got noticeably better. 
-Also: real speech is messy. 'Submit at midnight — actually 11:45' broke my first version. Now the app shows your self-corrections struck through. 
-Clip below: my own hackathon kickoff call is the app's memory, and it just objected to me. @Product Space @Wispr Flow #BuildWithVoice"
+**Post 2 (while building; 20–30 s clip: Wispr dictating into Claude Code, then the reasoning trail and a red OBJECTION!):**
+"~5 hours in. ~X,XXX words spoken, 0 typed.
+Learning: speaking prompts makes me explain *why*, and the AI builds what I meant.
+Plot twist: I fed the app our own hackathon kickoff call. Then I pasted a WhatsApp message from 'my team' saying we're 3 people. It objected: 'Kickoff ruled max team size = 2', with the timestamp. 😅
+@Product Space @Wispr Flow #BuildWithVoice"
 
 **Post 3 (by 1 Nov, demo video):**
 "Built in one day, entirely by voice: OBJECTION! 🔨
-→ 30-second spoken debrief → decisions, owners, deadlines with quotes
-→ cross-meeting memory that flags contradictions (measured: P/R on my eval set = __/__)
-→ confirm, then tasks land in GitHub; reminders + weekly digest per person
-Wispr Flow count for the day: __ words. Biggest takeaway: when you speak, you think out loud — and AI builds what you meant, not what you typed.
-Try it: <url> (demo/demo). Thanks @Product Space @Wispr Flow. What should it object to next?"
+→ calls, WhatsApp chats or a 30-second voice debrief → decisions, owners, deadlines, each with the quote
+→ an agent that searches past decisions, double-checks itself and objects when you contradict them (eval: __% precision, refinements correctly not flagged)
+→ confirm, then tasks land in the ledger + Notion; reminders and a weekly digest per person
+Wispr Flow for the day: __ words. Takeaway: when you speak, you think out loud, and that's the best spec an AI can get.
+Try it: <url> (demo / demo). Thanks @Product Space @Wispr Flow. What should it object to next?"
 
 ## 6. Demo video script (2:30, screen + voiceover)
-0:00–0:15 Hook: "Every team loses decisions. Last week we agreed the launch date; today someone quietly moved it. This is OBJECTION!, the meeting agent that argues back — and I built it entirely by voice."
-0:15–0:35 Memory: show decision spine with the real kickoff call ingested (speakers attributed, quotes + timestamps).
-0:35–1:10 Wow: hold Fn, speak the messy debrief live. Cleaned text with struck self-corrections → actions → red OBJECTION! "Kickoff ruled max team = 2". Click Keep old / Overrule.
-1:10–1:30 Confirmation tray → Confirm → GitHub issue opens with source quote.
-1:30–1:50 Reminder log (cron-sent) + Priya's weekly digest.
-1:50–2:10 Eval page: precision/recall, incl. refinements correctly NOT flagged. "It's not a summarizer: it's memory plus judgement."
-2:10–2:30 How built: Wispr word count, clip of dictating to Claude Code. Stack in one line. Close: "Talk for 30 seconds. Never lose a decision again."
+0:00–0:15 Hook: "In Indian startups, decisions don't die in meetings, they die in WhatsApp. This is OBJECTION!, the meeting agent that argues back, built entirely by voice."
+0:15–0:35 Memory: decision spine with today's real kickoff call ingested: speakers, quotes, timestamps.
+0:35–1:00 WhatsApp: paste a chat export. Senders become speakers. Red OBJECTION! "Kickoff ruled max team = 2". Tap **Keep old**.
+1:00–1:30 Voice: hold Fn, speak a messy debrief with a self-correction. Show it struck through. Reasoning trail: search_memory → verify_conflict → "refinement, not a conflict". The agent asks "Is Priya the owner?", answered by voice.
+1:30–1:50 Confirm → ledger card + Notion page appear. Reminder log + **Send now** email arrives. Priya's weekly digest.
+1:50–2:10 Eval page: precision/recall, refinements correctly not flagged, agent-vs-fallback rate. "Not a summarizer: memory plus judgement."
+2:10–2:30 Built by voice: Wispr word count + clip of dictating to Claude Code. Close: "Paste it, say it, and never lose a decision again."
 
 ## 7. Spoken prompts (dictate via Wispr into Claude Code, in order)
-1. "Okay, so we're starting a brand new project called Objection. It's a Next.js 15 app with the App Router, TypeScript and Tailwind, and it'll deploy on Vercel. Set up the project in this folder, add a dot env example file with GEMINI_API_KEY, DATABASE_URL, GITHUB_TOKEN, GITHUB_REPO, RESEND_API_KEY and DEMO_PASSWORD, and don't put any real keys in the code. Run it once to make sure it starts."
-2. "Now the look. I really don't want this to look like a default AI app — no purple gradients, no generic cards. Make it feel like a courtroom ledger or an old newspaper: warm paper background, ink black text, one stamp red accent, a serif display font like Fraunces for headings and a mono font for quotes. Put these in a small design tokens file and in the Tailwind config, and build a layout with a masthead that says OBJECTION! and a tagline, 'the meeting agent that argues back.'"
-3. "Add a really simple login: one password from the DEMO_PASSWORD env var, username demo, set a cookie, and protect every page except the login page and the cron route. Then set up the database with Supabase Postgres — tables for meetings, utterances with speaker and timestamp, decisions with topic key, quote, speaker, timestamp and a status like active or superseded, actions with owner, due date and status, objections, people, and a reminders log. Give me the SQL as a migration file and a db helper."
-4. "Next, transcript ingestion. I'll paste transcripts that look like this: square bracket minutes colon seconds, then Speaker 1 colon, then the text — or just Name colon text. Write a parser that turns that into utterances with speaker and time, and a screen where after pasting I can rename speakers, like Speaker 2 is Sakshi. Add the meeting date field too. Test the parser with a couple of lines from the kickoff transcript."
-5. "Now the main AI step. Make an API route that takes either a transcript or a messy spoken debrief, plus the meeting date, and calls Gemini with a strict JSON schema. It should return a cleaned version of the text where self-corrections are kept as pairs — what I said first and what I corrected it to — and a list of decisions and action items, each with owner, deadline resolved to an actual date, the exact quote, the speaker and the timestamp. If the model can't find a quote in the original text, drop that item. Also pick a topic key for each decision from a fixed list I'll give: launch-date, deadline, team-size, pricing, scope, owner, budget, tech-stack, design, hiring, submission, tooling, meeting-cadence, client, other — and if none fits, propose a new one and mark it as needing confirmation."
-6. "Build the Debrief screen. One big text box that's the hero of the page — it's where Wispr Flow types — with a hint like 'hold Fn and just talk.' When I submit, show the cleaned text with my self-corrections struck through and the corrected version next to it, then a Confirmation tray listing every decision and action with checkboxes. Nothing gets saved or posted until I tick and hit Confirm."
-7. "Hook up GitHub. When I confirm, save everything to the database and create a GitHub issue for each ticked action in the repo from GITHUB_REPO, with labels for the owner and due date and the source quote and meeting in the body. Show the issue links with a stamped 'FILED' mark. Handle errors nicely if the token's wrong."
-8. "Let's deploy now. Walk me through pushing this to a new GitHub repo and deploying to Vercel, and tell me exactly which env vars to add in the Vercel dashboard. Then I'll test creating an issue from the live site."
-9. "Now the part that makes this special: memory and conflicts. After extraction, for each new decision, look up earlier active decisions with the same topic key, max twenty, and send them with the new one to Gemini to classify it as new, confirms, refines or contradicts, with a one-line reason. Be strict — a refinement or a more specific date is not a contradiction, and different events aren't contradictions either."
-10. "When something contradicts, show a big red Objection card in the tray — a stamp that says OBJECTION! — with a then versus now layout: the earlier quote, who said it, which meeting and when, and the new quote. Give three buttons: Overrule, which marks the old decision superseded; Keep old, which drops the new one; and Flag for discussion. Store the verdict."
-11. "Make the home page a decision spine: a vertical timeline of every decision grouped by topic, newest on top, superseded ones struck through with an OVERRULED stamp and a link to what replaced them, and clicking one shows its quote and meeting."
-12. "Reminders. Add a cron route at api slash reminders, protected by a CRON_SECRET, that finds open actions due in the next 24 hours that haven't been reminded, emails the owner using Resend — for the demo send everything to my email from an env var — and writes a row to the reminders log. Vercel's free plan only runs cron once a day, so add a daily cron in vercel dot json, and also a GitHub Actions workflow on a schedule every hour that calls the route with the secret. Add a Reminder log page, and a 'send now' button that runs the same function."
-13. "Weekly digest per person: a page at digest slash the person's name that shows what they own and when it's due, what changed this week — new and overruled decisions — and any open objections that involve them, written as a short friendly summary by Gemini on top, and an 'Email this digest' button."
-14. "Seed data. Write a seed script that loads the real kickoff transcript I'll paste into a file, from today, 31 October, with Speaker 2 as Sakshi, plus three short fake earlier team meetings from last week with a launch date, a pricing decision and an owner, so there's history to object to. Make it safe to run twice."
-15. "Now an eval page so I can prove it works. Create ten small labelled test snippets: three that really contradict earlier decisions, two that are refinements and must not be flagged, and five normal ones with known action items. Run them through the same pipeline and show precision and recall for action extraction and for conflict detection, plus which ones failed and why."
-16. "Run the eval, show me the failures, and let's tighten the prompts until the refinement cases stop getting flagged. Don't change the test labels to make it pass."
-17. "Design pass. Go through every page and make it feel finished: empty states, loading states that say things like 'checking the record,' the stamps animating in slightly, good spacing, and make sure it looks right at laptop size. Keep the newspaper feel, no generic dashboard look."
-18. "Let me say my verdict by voice too: in the objection card add a small box where I can type or dictate something like 'overrule it, the twenty-eighth stands' and Gemini maps it to one of the three buttons and asks me to confirm."
-19. "Write a README with what Objection does, the must-build list mapped to features, the architecture, how to run it, the demo login, and a section on how I built it entirely by voice with Wispr Flow. Then redeploy and run through the whole demo flow on the live URL with me and fix anything broken."
+1. "Okay, so we're starting a brand new project called Objection. It's a Next.js 15 app with the App Router, TypeScript and Tailwind, deploying on Vercel. Set it up in this folder, add a dot env example with GEMINI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY, NOTION_TOKEN, NOTION_DB_ID, RESEND_API_KEY, REMINDER_TO_EMAIL, CRON_SECRET and DEMO_PASSWORD, and never put real keys in the code. Run it once to check it starts."
+2. "Now the look. I don't want this to look like a default AI app — no purple gradients, no generic cards. Make it feel like a courtroom ledger or an old newspaper: warm paper background, ink black text, one stamp-red accent, Fraunces for headings and a mono font for quotes. Put it in a design tokens file and the Tailwind config, and make a masthead that says OBJECTION! with the tagline 'the meeting agent that argues back.'"
+3. "Add a simple login: username demo and the password from DEMO_PASSWORD, set a cookie, protect every page except login and the reminders API. Then set up Supabase Postgres with tables for meetings, utterances with speaker and time, decisions with topic key, quote, speaker, time, status and an embedding column using pgvector, actions with owner, due date and status, objections with verdict, agent trace steps, a reminders log, and people. Give me the SQL as a migration and a small db helper."
+4. "Ingestion. I'll paste three kinds of input. One: transcripts like square bracket minutes colon seconds, Speaker 1 colon, text, or just Name colon text. Two: WhatsApp chat exports, which look like square bracket 31 slash 10 slash 26 comma 2:05 pm square bracket Name colon message, or the Android format, date comma time dash Name colon message. The sender is the speaker, and skip system lines like 'messages are end-to-end encrypted' and media omitted. Three: a spoken debrief where the speaker is me. Auto-detect which one it is, turn it into utterances with speaker and time, and test it on a few lines from the kickoff transcript and a fake WhatsApp chat."
+5. "Now the extraction step. Make an API route that calls Gemini with a strict JSON schema and returns a cleaned version of the text with self-corrections kept as pairs, what was said first and what it was corrected to, plus decisions and action items with owner, deadline resolved to a real date using the meeting date, the exact quote, the speaker and the time. Drop anything whose quote isn't in the source. Give each decision a topic key from this list: launch-date, deadline, team-size, pricing, scope, owner, budget, tech-stack, design, hiring, submission, tooling, meeting-cadence, client, other."
+6. "Build the main screen. A big Debrief box as the hero — it's where Wispr Flow types — with a hint like 'hold Fn and just talk', plus a 'paste transcript or WhatsApp chat' tab. After submitting, show the cleaned text with my self-corrections struck through, then a Confirmation tray with every decision and action as a checkbox. Nothing is saved or sent anywhere until I tick and press Confirm."
+7. "Let's deploy now. Help me push this to a new GitHub repo and deploy it to Vercel, and tell me exactly which environment variables to add. Then I'll test logging in on the live site."
+8. "Now the agent. Use Gemini function calling with four tools and a hard limit of five steps. search_memory takes a topic and a query and looks for earlier active decisions with the same topic key in the last 14 days, then 90 days, then all time, and if there's still nothing, falls back to embedding similarity. verify_conflict does a separate, strict check of whether the new decision really contradicts the old one or just refines it. ask_clarifying_question is for when the owner or date is ambiguous. queue_action only adds things to the tray. Save every step to the agent trace table. If anything errors or times out, fall back to a simple fixed path: extract, look up by key, classify. Mark which path ran."
+9. "Show the agent's work. Add a Reasoning trail panel next to the tray that shows each tool call, what it searched, what it found and why it decided, step by step, in the ledger style. When the agent asks a clarifying question, show it as a question card I can answer by typing or with my voice, and continue the loop with my answer."
+10. "When a decision contradicts, show a big red OBJECTION! stamp card in the tray, with then versus now: the earlier quote, who said it, which meeting or chat and when, and the new quote. Four verdict buttons: Overrule, which supersedes the old decision; Pivot, meaning it's an intentional change, which also supersedes it but labels it intentional; Keep old; and Flag for discussion. Also a small box where I can say the verdict, like 'pivot, the 28th stands', and Gemini maps it to a button and asks me to confirm. Then make the home page a decision spine timeline grouped by topic, superseded ones struck through with an OVERRULED or PIVOT stamp."
+11. "Now the tracker. Make a Ledger page where every confirmed action is a card with owner, due date, status open, done or blocked, the source quote and a link to the meeting, and I can change status with one tap. Then add Notion: when I confirm, create a page in the Notion database from NOTION_DB_ID with these exact properties — Title, Owner, Due, Status, Source quote, Meeting and Objection link — and show a 'filed in Notion' stamp with the link. Handle a bad token nicely."
+12. "Reminders. Make an API route at api slash reminders that checks a CRON_SECRET header, finds open actions due in the next 24 hours that haven't been reminded, emails them with Resend to REMINDER_TO_EMAIL with the owner's name in the subject, and writes a row to the reminders log. Add a GitHub Actions workflow that calls it every hour with the secret, a Reminder log page, and a 'Send now' button that runs the same function."
+13. "Weekly digest per person: a page at digest slash name showing what they own and when it's due, what changed this week — new, overruled and pivoted decisions — and open objections that involve them, with a short friendly Gemini summary on top and an 'Email this digest' button. Then redeploy."
+14. "Seed data. Write a seed script that loads the real kickoff transcript from a file, dated today, with Speaker 2 as Sakshi, plus three short earlier team meetings from last week with a launch date, a pricing decision and an owner, and one small WhatsApp chat export from the team. Make it safe to run twice."
+15. "Now an eval page to prove it works. Ten labelled snippets: three that really contradict earlier decisions, two that are refinements and must not be flagged, and five normal ones with known actions, including two from WhatsApp. Run them through the real pipeline and show precision and recall for action extraction and conflict detection, which path ran, agent or fallback, and the failures. Then run it and tighten the prompts until the refinements stop getting flagged — but don't change the labels."
+16. "Small one: on every confirmed decision and objection add a 'Share to WhatsApp' button that opens a wa dot me link with the text filled in, so I just tap send."
+17. "Add voice Q&A over memory: a box where I can ask 'what did we decide about pricing?' and it answers with the timeline of decisions on that topic, with quotes and dates, using search_memory."
+18. "Add a Decision debt score in the masthead: the share of decisions in the last seven days that were contradicted without anyone giving a verdict, shown as a little gauge with last week's number for comparison, and clicking it lists them."
+19. "Design pass. Go through every page: empty states, loading states that say things like 'checking the record', stamps animating in slightly, good spacing at laptop size, and a decent layout on a phone. Keep the newspaper feel."
+20. "Write a README with what Objection does, the seven must-builds mapped to features, the architecture, how the agent loop and fallback work, how to run it, the demo login, and a section on how I built it entirely by voice with Wispr Flow. Redeploy, then walk through the whole demo on the live URL with me and fix anything broken."

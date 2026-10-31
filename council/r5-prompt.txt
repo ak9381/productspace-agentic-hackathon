@@ -1,0 +1,46 @@
+You are a harsh 3-persona judging council: (a) the target user, (b) an Indian seed VC, (c) an operator who has shipped hackathon winners. Answer only from this prompt; no tools. Be blunt.
+
+EVENT: Product Space x Wispr Flow "Agentic AI Hackathon", India, 31 Oct 2026. One solo builder, ~9 h left, submission 11:59 PM IST. He builds only by dictating prompts with Wispr Flow (voice-to-text) into Claude Code. Must be deployed (free: Vercel + Supabase + Gemini API), with a test login and a 2–3 min voiceover video. The product's main input must be natural speech typed in by Wispr; it must turn fillers and self-corrections into clean structure. Judges said: no generic Claude-looking UI; AI must be genuinely useful, not a bolted-on chat box; innovation beyond one prompt → one response. Anything not built by the deadline gets no credit.
+
+RUBRIC /100: Wispr usage (voice to build and to use) 20; Prototype & UX 20; AI integration 20; Problem understanding 15; LinkedIn content & engagement 15; Innovation 10.
+
+THE 5 STATEMENTS (pick one): 01 Media repurposing studio with brand memory; 02 Adaptive exam-prep tutor with a learner model; 03 Meeting-to-execution agent; 04 Personal finance coach with a living money model; 05 Career pivot coach. Chosen: 03.
+
+STATEMENT 03 (full): "Decisions made in meetings get lost. Teams must build: (1) transcript ingestion with speaker attribution; (2) extraction of decisions, action items, owners, and deadlines; (3) detection of conflicts with earlier decisions stored in memory; (4) creation of tasks in a tracker through an integration; (5) reminders before deadlines; (6) a weekly digest per person; (7) a confirmation step before anything gets posted. The cross-meeting memory and the conflict detection are what make this a real system rather than a transcript summarizer."
+
+CONCEPT: "OBJECTION!" — the meeting agent that argues back.
+User: founder/PM/agency lead at a 5–30 person Indian startup with 10+ calls a week. Pain: "Didn't we agree launch was the 15th?" and nobody can find where; a client call quietly reverses scope. Today they rely on Notion notes, WhatsApp minutes and Otter summaries nobody rereads.
+How it works:
+- (1) Paste a Zoom/Meet/Wispr-Notetaker transcript; the parser reads "[mm:ss] Speaker N:" and "Name:" lines, and the user renames speakers once. Hero input: a 30-second spoken "Debrief" box typed by Wispr ("um, launch, push it to the 30th, actually no 28th, Priya owns the landing page").
+- (2) Gemini returns structured JSON: the cleaned text with self-corrections shown struck through (30th → 28th); decisions and actions with owner, deadline resolved to a date, exact quote, speaker and timestamp. Items whose quote isn't in the source are dropped.
+- (3) Each decision gets a topic key from a fixed taxonomy of ~15 (launch-date, team-size, pricing, scope...); new keys need user confirmation. The app fetches up to 20 earlier active decisions with the same key, and Gemini classifies the new one as new / confirms / refines / contradicts, with a reason. A contradiction shows a red OBJECTION! card: then-vs-now quotes, who decided, which meeting, and buttons for Overrule (supersede), Keep old, or Flag. Verdicts can also be spoken. The idea builds on temporal agent memory (Zep/Graphiti 2025); meeting summary + action items alone is commodity (Otter, Fireflies, Microsoft research).
+- (7) Confirmation tray: nothing is saved or posted until items are ticked.
+- (4) Confirmed actions become GitHub Issues through the real API, with owner/due labels and the source quote; links are shown.
+- (5) Reminders: a GitHub Actions hourly schedule (plus a daily Vercel cron backup) calls /api/reminders, which emails owners (Resend) about tasks due within 24 h and writes a visible Reminder log. A "Send now" button runs the same function.
+- (6) /digest/[person]: what you own, what changed this week, open objections, with a Gemini summary and an email button.
+- Home: a "decision spine" timeline; superseded decisions are struck through with an OVERRULED stamp. Design is a courtroom ledger/newspaper style (paper, ink, stamp red, serif), not a dashboard.
+- Proof: an /eval page with 10 labelled snippets (3 contradictions, 2 refinements that must NOT be flagged, 5 plain) shows live precision/recall. Seed memory: the real kickoff call of this hackathon plus 3 earlier meetings. Wow moment: Akash says "we're three of us now", and it objects that the kickoff ruled max team = 2.
+- Cut: Slack/Calendar/Linear, live call joining, multi-tenant auth, embeddings.
+- LinkedIn: 3 posts (start, a Wispr build clip, a demo) using shareable Objection card images; Wispr word count shown.
+
+TASK: score it and critique it. Specifically critique (a) the AGENTIC AI integration — is it a real multi-step agent with memory, tools and judgement, or a prompt chain? — and (b) PROBLEM UNDERSTANDING — does it get why decisions get lost?
+
+ANSWER IN EXACTLY THIS FORMAT (keep the labels; one line each unless stated):
+USER: n/10
+INVESTOR: n/10
+BUSINESS: n/10
+TOTAL30: n
+HACK100: n (wispr n/20, ux n/20, ai n/20, problem n/15, linkedin n/15, innovation n/10)
+NOVELTY: n/8
+ENDUSER: n/8
+MB1 transcript+speakers: yes|partial|no — reason
+MB2 decisions/actions/owners/deadlines: yes|partial|no — reason
+MB3 conflict detection w/ memory: yes|partial|no — reason
+MB4 tracker integration: yes|partial|no — reason
+MB5 reminders: yes|partial|no — reason
+MB6 weekly digest per person: yes|partial|no — reason
+MB7 confirmation step: yes|partial|no — reason
+AGENTIC_CRITIQUE: 3–5 sentences
+PROBLEM_CRITIQUE: 3–5 sentences
+BIGGEST_WEAKNESS: one sentence
+ONE_CHANGE: one sentence
