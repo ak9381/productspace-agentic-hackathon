@@ -17,3 +17,16 @@ Then reuse the every minute cron, no new cron trigger, and run the Wispr pull on
 - Paste import still works.
 
 ## Commit and push when green
+
+## Multi-user rules (added 4:25 PM)
+- Each user connects their own Wispr account; tokens are keyed to their Supabase user id. Nobody sees another user's meetings.
+- Tokens live in a `wispr_connections` table with RLS on and no client policies, so only the server (secret key) can read it. Never send tokens to the browser. If time allows, encrypt them with AES-GCM using a `WISPR_TOKEN_KEY` Cloudflare secret.
+- Only a signed-in, allowlisted user can start Connect Wispr. Check the session in `/api/wispr/connect` and `/api/wispr/callback`, and verify the OAuth `state`.
+- Disconnect deletes that user's row immediately.
+- Judge login: seed one demo meeting labelled source "Wispr Notetaker" so judges see the auto-import result without their own Wispr account. Keep the Connect Wispr button visible so they can try it with their own account.
+
+Validation additions:
+- [ ] User A connects; user B sees none of A's meetings.
+- [ ] Browser network tab never shows a Wispr token.
+- [ ] Callback with a wrong state is rejected.
+- [ ] Judge account shows the seeded Wispr Notetaker meeting.
