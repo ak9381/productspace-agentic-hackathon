@@ -1,0 +1,15 @@
+date_ist,round,candidate,judge,user,investor,business,total30,hack100,weakness
+2026-10-31,1,A,claude,8,5,6,19,66,Voice is not the main input (URL/transcript is) and real video cutting is PLAN — caps the Wispr axis and risks the no-proof kill rule.
+2026-10-31,1,B,claude,8,6,7,21,79,"Five subsystems in 9.5h — the brilliant speak-reasoning->misconception loop gets buried under graph/dashboard/spaced-rep you can't finish, and proof-of-correctness is soft."
+2026-10-31,1,C,claude,7,5,6,18,79,"On paper it's 'another meeting-notes tool'; only the cross-meeting Conflict Radar differentiates it, so burying it behind a generic action-item list kills the UX and innovation axes."
+2026-10-31,1,D,claude,7,5,5,17,73,Primary input is a bank CSV/PDF (voice secondary) and statement parsing is a high-variance sinkhole that can break the live demo.
+2026-10-31,1,E,claude,7,5,5,17,70,The one strong voice feature (rubric-scored mock interview) is one module inside a sprawling upload-driven product that won't fully ship.
+2026-10-31,1,A,agy,5,3,4,12,53,"Core value proposition of real video clipping is punted to an unbuilt PLAN, turning the app into a generic text summarizer in a crowded market."
+2026-10-31,1,B,agy,8,6,6,20,90,High risk of scope creep in graph visualization and pedagogical math during a tight 9.5-hour build window.
+2026-10-31,1,C,agy,9,8,9,26,93,Risks blending in as another standard meeting note taker if the decision contradiction engine is not front-and-center in the UI.
+2026-10-31,1,D,agy,7,5,4,16,74,Parsing inconsistent Indian bank CSVs and password-protected PDFs under hackathon time constraints is an engineering death trap.
+2026-10-31,1,E,agy,6,4,5,15,70,Unfocused feature sprawl across the career funnel coupled with fragile live job-board scraping dependencies.
+2026-10-31,2,C1,claude,7,5,6,18,65,Generic UI and no measurable proof — forgettable on screen and leaves the UX + LinkedIn rubric lines empty.
+2026-10-31,2,C2,claude,8,6,6,20,79,"Over-scoped for 9.5h solo; pgvector + custom theme + cron + eval + digest risks a half-finished UI, and LinkedIn content (15 pts) is still ignored."
+2026-10-31,2,C1,agy,5.0,5.0,6.0,16.0,63,"Generic, forgettable Claude-like UI that lacks a visual hook, viral distribution narrative, or standout reason to exist."
+2026-10-31,2,C2,agy,8.0,7.5,8.5,24.0,93,Infrastructure bloat risk (Neon pgvector + Resend + Vercel Cron) that could cause runtime failure during the tight 9.5-hour solo voice-dictated build.

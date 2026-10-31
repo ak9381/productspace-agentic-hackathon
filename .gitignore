@@ -1,0 +1,5 @@
+kickoff-captions-raw.txt
+invite.ics
+*.err
+*.json
+.env
