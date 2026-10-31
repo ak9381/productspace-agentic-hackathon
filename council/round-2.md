@@ -312,3 +312,4 @@ Akash has ~9.5 hours, building solo, dictating via Wispr Flow into Claude Code /
   ]
 }
 ```
+- See plan.md for the next version.

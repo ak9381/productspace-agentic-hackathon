@@ -396,3 +396,4 @@ Most meeting tools generate generic, unstructured "meeting minutes" that disappe
   "pick": "C"
 }
 ```
+- See plan.md for the next version.

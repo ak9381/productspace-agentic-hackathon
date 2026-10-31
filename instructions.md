@@ -20,7 +20,7 @@ Sources: 6 Gmail mails (29–30 Oct), WhatsApp broadcast (30 Oct night), relayed
 - [x] Akash signed up, logged in, granted permissions.
 - [x] Dictation test passed (31 Oct 9:33 IST, manual Fn hold).
 - [x] Kickoff attended 12:30 PM IST; notes in kickoff-notes.md; rules in rules.md; statements in problem-statements.md.
-- [ ] Pick statement + plan (council → plan.md).
+- [x] Picked 03 Meeting-to-execution, "OBJECTION!" (4-round council, 31 Oct ~2:10 PM IST); see plan.md.
 - [ ] Build by voice (Wispr → Claude Code), deploy.
 - [ ] LinkedIn post 1 (today, after kickoff).
 - [ ] Submit project by 11:59 PM IST 31 Oct.
